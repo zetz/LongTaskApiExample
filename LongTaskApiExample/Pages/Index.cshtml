@@ -1,0 +1,72 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+
+<div>
+    <h1 class="panel-title">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <form method="post">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2 class="panel-title">Queued Hosted Service</h2>
+                </div>
+                <div class="panel-body">
+                    <table>
+                        <tr>
+                            <td width="200">Message</td>
+                            <td width="200">Count</td>
+                            <td width="200">Delay</td>
+                        </tr>
+                    </table>
+
+                    <div class="form-group">
+                        <input type="text" name="msg" value="hello"/>
+                        <input type="number" name="loop" value="8"/>
+                        <input type="number" name="delay" value="1.5" step="0.1"/>
+                        <button type="submit" asp-page-handler="AddTask" class="btn btn-default">Add Task</button>
+                    </div>
+                    <h3>Database Messages</h3>
+                    <p>After selecting the <b>Add Task</b> button a few times. Refresh the page in the browser every few seconds. As the tasks are running, task status messages are saved into the database. The page shows the current contents of the database on each page refresh.</p>
+                    
+                    <table>
+                        <tr>
+                            <td width="200">ID</td>
+                            <td width="200">TEXT</td>
+                            <td width="100">UpdateTime</td>
+                            <td width="100">Status</td>
+                            <td width="100">ProcessRate</td>
+                        </tr>
+
+                        @foreach (var msg in Model.Messages)
+                        {
+                            <tr>
+                                <td>@msg.Id</td>
+                                <td>@msg.Text</td>
+                                <td>@msg.UpdateTime</td>
+                                <td>@msg.Status</td>
+                                <td>@msg.ProcessRate</td>
+
+                                @if (msg.Status == "Enqueue" || msg.Status == "Processing")
+                                {
+                                    <td>
+                                        <button type="submit" asp-page-handler="Abort" class="btn btn-default">
+                                            Abort
+                                        </button>
+                                        <input type="hidden" name="id" value="@msg.Id"/>
+                                    </td>
+                                }
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
